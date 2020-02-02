@@ -64,6 +64,7 @@ void loop() {
 					pushSolenoid(getPiDigit(index));
 					holdSolenoid();
 					pullSolenoid(getPiDigit(index));
+					holdSolenoid();
 					index++;
 				}
 			break;
