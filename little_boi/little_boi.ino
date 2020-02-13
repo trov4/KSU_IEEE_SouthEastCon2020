@@ -63,7 +63,7 @@ void loop() {
 					delay(1000);
 					pullSolenoid(10);
 					extendServo();
-					currentState = LOOP;
+					currentState = EXECUTE;
 				}
 			break;
 			
@@ -111,7 +111,7 @@ void pullSolenoid(int pin) {
  * 		debounce properly.
  */
 void holdSolenoid() {
-	delay(30000);
+	delay(30); // 30 input = 30ms
 }
 
 
@@ -124,7 +124,7 @@ void holdSolenoid() {
  */
 void extendServo() {
 	myServo.write(degrees); // tell servo to turn according to degrees value
-	delay(3000); // wait for 3 seconds
+	delay(3000); // wait for 3 seconds, 3000 input = 3s
 }
 
 
@@ -139,7 +139,7 @@ void extendServo() {
  * 		initialized here.]
  */
 void initPins() {
-  // iterate through 1 to 12
+  // iterate through 0 to 10
   for (int i = 0; i <= 10; i++)
   {
     pinMode(i, OUTPUT);
