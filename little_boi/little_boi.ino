@@ -5,6 +5,8 @@
  * 		Implementation of button pusing robot for SouthEastCon 2020
  */
 
+// Arduino servo library
+#include <Servo.h>
 
 // pi10000.h: header file containing 100000 digits of Pi
 // taken from official SouthEastCon2020 repo
@@ -13,6 +15,9 @@
 const enum START = 0;
 const enum PUSH_TO_WALL = 1;
 const enum EXECUTE = 2;
+
+Servo myServo;
+int degrees = 0; // TODO: figure out angle/degrees value for servo
 
 unsigned long time;
 int index = 0;
@@ -26,6 +31,10 @@ void setup() {
 	
 	// initialize pin 11 as input for master switch
 	pinMode(11, INPUT);
+
+	// initialize pin 12 and 'attach' to servo
+	myServo.attach(12);
+
 }
 
 void loop() {
@@ -53,6 +62,7 @@ void loop() {
 					pushSolenoid(10);
 					delay(1000);
 					pullSolenoid(10);
+					extendServo();
 					currentState = LOOP;
 				}
 			break;
@@ -102,6 +112,19 @@ void pullSolenoid(int pin) {
  */
 void holdSolenoid() {
 	delay(30000);
+}
+
+
+/*
+ *	extendServo:
+ *		Makes servo rotate to specified degree value in order
+ *		to extend the button array.
+ *		[TODO: find proper degree value for this to work]
+ *
+ */
+void extendServo() {
+	myServo.write(degrees); // tell servo to turn according to degrees value
+	delay(3000); // wait for 3 seconds
 }
 
 
