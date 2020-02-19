@@ -1,5 +1,6 @@
 
-#include <stdio.h>
+#include <stdlib.h>
+
 // each hash is 1"x4" -- this assumes every coordinate in the array is .5"
 // assumes the bottom left corner is passed in
 
@@ -70,7 +71,7 @@ void startBox(double start_x, double start_y, int arenaMap[48][96]){
 }
 
 
-int main()
+void createMap()
 {
   int arenaMap[48][96];
   fill_center(2,25,arenaMap);
@@ -98,6 +99,14 @@ int main()
     l+=6;
   }
 
-return arenaMap;
+  for(int n = 0; n <= 48; n++)
+  {
+    for(int y = 0; y <= 96; y ++)
+    {
+      Serial.print(arenaMap[n][y]);
+    }
+    //Serial.println("hello");
+  }
+
 }
     
