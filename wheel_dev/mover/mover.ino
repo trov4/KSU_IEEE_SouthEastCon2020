@@ -48,8 +48,9 @@ void pin_init(motor target) {
 */
 
 void wait_micros (int time) {
-  long startTime = micros();
-  while (micros() - startTime < time);
+  delay(time/1000);
+  //long startTime = micros();
+  //while (micros() - startTime < time);
 }
 
 
