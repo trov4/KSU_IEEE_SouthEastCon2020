@@ -12,16 +12,18 @@ struct motor {
 
 motor frontR, backR, frontL, backL;
 
-void motor_clockwise(motor target) {
+// low level functions
+/****************************************************************************************/
+void motor_clockwise(motor target, uint8_t pwm) {
   digitalWrite(target.pinA, HIGH);
   digitalWrite(target.pinB, LOW);
-  analogWrite(target.pwmPin, 255);  // for now just full speed
+  analogWrite(target.pwmPin, pwm);  // for now just full speed
 }
 
-void motor_cclockwise(motor target) {
+void motor_cclockwise(motor target, uint8_t pwm) {
   digitalWrite(target.pinA, LOW);
   digitalWrite(target.pinB, HIGH);
-  analogWrite(target.pwmPin, 255);  // for now just full speed
+  analogWrite(target.pwmPin, pwm);  // for now just full speed
 }
 
 void halt(motor target) {
@@ -55,48 +57,36 @@ void wait_micros (int time) {
   //while (micros() - startTime < time);
 }
 
-
+// High level functions
+/****************************************************************************************/
 // see diagram in "Mecanum Wheel Diagram" page in one note for wheel directions
-void move_forward(int time) {
-  motor_clockwise(frontR);
-  motor_clockwise(backR);
-  motor_cclockwise(frontL);
-  motor_cclockwise(backL);
+void move_forward(uint8_t pwm) {
+  motor_clockwise(frontR, pwm);
+  motor_clockwise(backR, pwm);
+  motor_cclockwise(frontL, pwm);
+  motor_cclockwise(backL, pwm);
+  }
 
-  wait_micros(time);
-  
-  allHalt();
+void move_backward(uint8_t pwm) {
+  motor_cclockwise(frontR, pwm);
+  motor_cclockwise(backR, pwm);
+  motor_clockwise(frontL, pwm);
+  motor_clockwise(backL, pwm);
 }
 
-void move_backward(int time) {
-  motor_cclockwise(frontR);
-  motor_cclockwise(backR);
-  motor_clockwise(frontL);
-  motor_clockwise(backL);
-
-  wait_micros(time);
-
-  allHalt();
+void move_right(uint8_t pwm) {
+  motor_clockwise(frontR, pwm);
+  motor_cclockwise(backR, pwm);
+  motor_cclockwise(frontL, pwm);
+  motor_clockwise(backL, pwm);
+  wait_micros(time, pwm);
 }
 
-void move_right(int time) {
-  motor_clockwise(frontR);
-  motor_cclockwise(backR);
-  motor_cclockwise(frontL);
-  motor_clockwise(backL);
-  wait_micros(time);
-
-  allHalt();
-}
-
-void move_left(int time) {
-  motor_cclockwise(frontR);
-  motor_clockwise(backR);
-  motor_clockwise(frontL);
-  motor_cclockwise(backL);
-  wait_micros(time);
-
-  allHalt();
+void move_left(uint8_t pwm) {
+  motor_cclockwise(frontR, pwm);
+  motor_clockwise(backR, pwm);
+  motor_clockwise(frontL, pwm);
+  motor_cclockwise(backL, pwm);
 }
 
 void setup() {
@@ -126,5 +116,4 @@ void setup() {
 
 void loop() {
   // loop through each for 5 seconds each
-  move_forward(5000);
 }
