@@ -24,39 +24,8 @@
 	// Under the assumption we initialize important areas like lines, start, and end as structures with x and y coordinates 
 	// We can pass this into the diff function to obtain current x and y position coordinates
 	
-
-	/*void diff(int legoX, int legoY, int currentX, int currentY)
-	{
-		int nextLegoXLoc = 0;
-		int nextLegoYLoc = 0;
-		if legoX > currentX{
-		nextLegoXLoc = legoX - currentX;
-		}
-		else
-		{
-		nextLegoXLoc = currentX - legoX;
-		}
-		if legoY > currentY{
-		nextLegoYLoc = legoY- currentY;
-		}
-		else
-		{
-		nextLegoYLoc = currentY - legoY;
-		}
-
-		drive_x(nextLegoYLoc);
-		drive_y(nextLegoYLoc);
-	}*/
-
-	/*//void start
-	{
-	startposx = 15;
-	startposy = 24;
-	}
-	*/
-	//hypothetical situation: Robot is at start, and needs to go to bin 1
 	
-// Let's create a global boolean variable called insideBin, which will be checked in diff function
+// The global float variables percentDiffX and percentDiffY 
 	void diff2(areaD) {
 		// I am getting the location of the bin that I need to go to
 		int distanceAwayY = areaD.bottomLeftY;
@@ -70,26 +39,16 @@
 		int currentY = currY;
 		int legosLeft = areaD:legosTaken;
 		/*
-		if (insideBin == true)
+		//Do target coordinates minus current coordinates to find difference
+		if (bin != true)
 		{
-			if (currentY < 24)
-			{
-				diffdistanceY = 24 - currentY;
-			}
-			else
-			{
-				diffdistanceY = (currentY - 24) * -1;
-			}
+			diffdistanceY = distanceAwayY - currentY;
+			diffdistanceX = distanceAwayX - currentX;
 			diffY = diffdistanceY;
-
-			diffdistanceX = 89-currentX;
-			diffX = diffdistanceX
+			diffX = diffdistanceX;
 		}
 
-		*/
-	// this will check the lowerY value passed in, and will 
-	//	int distanceDiffY = distanceAwayY - currentY;
-		//int distanceDiffX = distanceAwayX - currentX;
+	*/
 		if (currentX >areaD.bottomLeftX)
 		{
 			diffdistanceX = (currentX - distanceAwayX) * -1;
@@ -113,13 +72,11 @@
 			{
 				diffdistanceX+=5;
 			}
-			//diffX = diffdistanceX;
 
 		}
 		//set global variable diffx = diffdistancex;
 		if (areaD.bottomLeftY == 12)
 		{
-			topRow= false;
 			distanceDiffY = -12;
 			if(legosLeft == 4 || legosLeft == 3)
 			{
@@ -129,13 +86,14 @@
 			{
 				distanceDiffY -= 6;
 			}
+			//percentDiffX = diffidistanceX/2;
+			//percentDiffY = diffdistanceY/2;
 			//diffY = diffdistanceY;
-			//insideBin = true;
-
+			//diffX = diffdistanceX;
 		}
 		//set global variable diffy = diffdistancey;
 
-		// diff for x
+		/*// diff for x
 		if (areaD.legosTaken %2 = 0) {
 			diffDistanceX += 1;
 		} else {
@@ -147,10 +105,7 @@
 			diffDistanceY +=  areaD.onTop? 12 : -12;
 		} else {
 			diffDistanceY += areaD.onTop? 17 : -17;
-		}
+		}*/
 
 	}
-	//Needs an insert class variables assignment 
-	// there will be a class array variable monitoring the number of each lego left in the bins, assigning each bin an index
-	//hardware questions, can the robot tell the difference between x and y?
-	//when digit received, get lego numbers left in bin, 
+	
