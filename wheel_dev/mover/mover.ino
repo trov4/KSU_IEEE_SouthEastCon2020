@@ -25,6 +25,8 @@ void motor_cclockwise(motor target) {
 }
 
 void halt(motor target) {
+  digitalWrite(target.pinA, HIGH);
+  digitalWrite(target.pinB, HIGH);
   analogWrite(target.pwmPin, 0); // should stop if no PWM
 }
 
@@ -48,7 +50,7 @@ void pin_init(motor target) {
 */
 
 void wait_micros (int time) {
-  delay(time/1000);
+  delay(time);
   //long startTime = micros();
   //while (micros() - startTime < time);
 }
@@ -125,7 +127,4 @@ void setup() {
 void loop() {
   // loop through each for 5 seconds each
   move_forward(5000);
-  move_backward(5000);
-  move_left(5000);
-  move_right(5000);
 }
