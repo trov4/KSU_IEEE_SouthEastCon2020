@@ -38,18 +38,19 @@
 		int currentX = currX;
 		int currentY = currY;
 		int legosLeft = areaD:legosTaken;
-		/*
 		//Do target coordinates minus current coordinates to find difference
-		if (bin != true)
-		{
-			diffdistanceY = distanceAwayY - currentY;
-			diffdistanceX = distanceAwayX - currentX;
-			diffY = diffdistanceY;
-			diffX = diffdistanceX;
-		}
+		
 
-	*/
-		if (currentX >areaD.bottomLeftX)
+		// diffdistanceY = distanceAwayY - currentY;
+		// diffdistanceX = distanceAwayX - currentX;
+		// if (bin != true)
+		// 	{
+		// 		diffdistanceY = distanceAwayY - currentY;
+		// 		diffdistanceX = distanceAwayX - currentX;
+		// 		diffY = diffdistanceY;
+		// 		diffX = diffdistanceX;
+		// 	}
+		else if (currentX >areaD.bottomLeftX)
 		{
 			diffdistanceX = (currentX - distanceAwayX) * -1;
 				if(legosLeft == 4 || legosLeft == 2)
@@ -107,5 +108,38 @@
 			diffDistanceY += areaD.onTop? 17 : -17;
 		}*/
 
+
+
 	}
 	
+void percent_difference(location target) {
+	// handle end location
+	int endX = target.bottomLeftX;
+	int endY = target.bottomLeftY;
+	if(target.bin) {
+		// X the same for Top and Bottom
+		if (target.legosTaken%2==0) endX += 2;
+		else endX += 7;
+
+		// hand Y -- different for Top and Bottom
+		// assuming that no more than 4 being taken
+		if (target.onTop) {
+			 if (target.legosTaken>2) endY += 2;
+		} else {
+			if (target.legosTaken<3) endY += 12;
+			else endY += 10;
+		}
+	}
+
+	// diffs
+	int deltaX = endX - currX;
+	int deltaY = endY - currY;
+
+	// averages
+	int xBar = (endX + currX)/2;
+	int yBar = (endY + currY)/2;
+
+	// set global variables 
+	percentX = deltaX/xBar;
+	percentY = deltaY/yBar;
+}
