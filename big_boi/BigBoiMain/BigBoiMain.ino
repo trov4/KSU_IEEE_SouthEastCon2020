@@ -243,15 +243,11 @@ void setup() {
   	pin_init(frontL);
   	pin_init(backL);
 
- 	// start time
- 	startTime = millis();
-
 }
 
 /*
 ToDo:
 - init locations
-- time stopper
 - fix Noah's Functions
 - add init state
 implement:
@@ -265,9 +261,18 @@ void loop() {
 	// major differences between moveToBin and moveToEnd is:
 	// moveToBin moves in the X direction then Y direction
 	// moveToEnd moves in the Y direction then X direction
+
+	// quit if at the end
+	if (millis() - startTime >= 180000) state = quit;
 	switch(state) {
 		case init:
 			// waits until some input
+
+
+			// HEY GEORGE, ADD YOUR THING HERE
+
+
+			startTime = millis();
 			break;
 		case next: // should work
 			currDigit = (int)(pi/10);
