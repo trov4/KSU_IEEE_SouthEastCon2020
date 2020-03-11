@@ -1,0 +1,331 @@
+/* Truth Table for Drivers
+  PinA   PinB  PWM   Spin Direction
+  L   H   >0    Counter ClockWise
+  H   L   >0    ClockWise
+*/
+
+struct motor {
+  int pinA;
+  int pinB;
+  int pwmPin;
+} ;
+	#include "iostream"
+	#include "stdlib.h"
+
+
+// IMPORTANT: SYNTAX MAY BE FUCKY, IMPLEMENT AT YOUR OWN RISK
+	// location of lego is equal to a number 
+	//GOAL: Link the location of the bin between robot
+	//Subgoal: Obtain location of robot
+	//Problem: I need to find the current location of the robot, bottom left corner is 0,0.
+	// At the start of run program, the robot will move to the starting square at 15, 24.
+	//I need to mark the locations of each line, and use the last known line location to determine robot location 
+
+	// Will use the bin class to create and assign each bin an x and y coordinate, in addition to the number of legos inside
+// Under the assumption we initialize important areas like lines, start, and end as structures with x and y coordinates 
+	// We can pass this into the diff function to obtain current x and y position coordinates
+	struct location {
+		int bottomLeftX;
+		int bottomLeftY;
+		int legosTaken;
+		int binIndex;
+		bool onTop;
+		bool bin;
+	};
+	// Under the assumption we initialize important areas like lines, start, and end as structures with x and y coordinates 
+	// We can pass this into the diff function to obtain current x and y position coordinates
+	
+	
+// The global float variables percentDiffX and percentDiffY 
+	void diff2(areaD) {
+		// I am getting the location of the bin that I need to go to
+		int distanceAwayY = areaD.bottomLeftY;
+		int distanceAwayX = areaD.bottomLeftX;
+		//int binDex = bin::binIndex;
+		int diffdistanceX = 0;
+		int diffdistanceY = 0;
+		bool topRow = areaD.onTop;
+		// Create a line or square structure and obtain its x and y integer values
+		int currentX = currX;
+		int currentY = currY;
+		int legosLeft = areaD:legosTaken;
+		//Do target coordinates minus current coordinates to find difference
+		
+
+		// diffdistanceY = distanceAwayY - currentY;
+		// diffdistanceX = distanceAwayX - currentX;
+		// if (bin != true)
+		// 	{
+		// 		diffdistanceY = distanceAwayY - currentY;
+		// 		diffdistanceX = distanceAwayX - currentX;
+		// 		diffY = diffdistanceY;
+		// 		diffX = diffdistanceX;
+		// 	}
+		else if (currentX >areaD.bottomLeftX)
+		{
+			diffdistanceX = (currentX - distanceAwayX) * -1;
+				if(legosLeft == 4 || legosLeft == 2)
+			{
+				diffdistanceX +=1;
+			}
+			else
+			{
+				diffdistanceX+=5;
+			}
+		}
+		else
+		{
+			diffdistanceX = distanceAwayX - currentX;
+				if(legosLeft == 4 || legosLeft == 2)
+			{
+				diffdistanceX +=1;
+			}
+			else
+			{
+				diffdistanceX+=5;
+			}
+
+		}
+		//set global variable diffx = diffdistancex;
+		if (areaD.bottomLeftY == 12)
+		{
+			distanceDiffY = -12;
+			if(legosLeft == 4 || legosLeft == 3)
+			{
+				distanceDiffY -= 1;
+			}
+			else
+			{
+				distanceDiffY -= 6;
+			}
+			//percentDiffX = diffidistanceX/2;
+			//percentDiffY = diffdistanceY/2;
+			//diffY = diffdistanceY;
+			//diffX = diffdistanceX;
+		}
+		//set global variable diffy = diffdistancey;
+
+		/*// diff for x
+		if (areaD.legosTaken %2 = 0) {
+			diffDistanceX += 1;
+		} else {
+			diffDistanceX += 5;
+		}
+		//diff for y
+		if (legosLeft< 2) {
+			diffDistanceY +=  areaD.onTop? 12 : -12;
+		} else {
+			diffDistanceY += areaD.onTop? 17 : -17;
+		}*/
+
+
+
+	}
+	
+void percent_difference(location target) {
+	// handle end location
+	int endX = target.bottomLeftX;
+	int endY = target.bottomLeftY;
+	if(target.bin) {
+		// X the same for Top and Bottom
+		if (target.legosTaken%2==0) endX += 2;
+		else endX += 7;
+
+		// hand Y -- different for Top and Bottom
+		// assuming that no more than 4 being taken
+		if (target.onTop) {
+			 if (target.legosTaken>2) endY += 2;
+		} else {
+			if (target.legosTaken<3) endY += 12;
+			else endY += 10;
+		}
+	}
+
+	// diffs
+	int deltaX = endX - currX;
+	int deltaY = endY - currY;
+
+	// averages
+	int xBar = (endX + currX)/2;
+	int yBar = (endY + currY)/2;
+
+	// set global variables 
+	percentX = deltaX/xBar;
+	percentY = deltaY/yBar;
+}
+void throttleX()
+{
+
+
+float scaledPWM;
+
+//get the percentage of max PWM duty cycle
+  scaledPWM = percentX * 255;
+
+//FLOW//
+
+//start of error check
+
+  if(scaledPWM < 25){	//Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+    scaledPWM = 25;		//25 ~= 10% duty cycle
+    
+	return;
+
+  }else if(scaledPWM == 0){		//check for if robot is at desired location
+    scaledPWM = 0;						//stop, 0% duty cycle
+    allHalt();
+    return;
+
+  }else if (scaledPWM > 255){				//correct for greater than 100% duty cycle
+    scaledPWM = 255;						//scaled PWM set to 100% duty cycle
+    move_backward(pinA, scaledPWM);
+	move_backward(pinB, scaledPWM);
+	return;
+
+  }else{	// all other conditions, with exception of error causing ones
+    move_backward(pinA, scaledPWM);
+	move_backward(pinB, scaledPWM);
+	return;
+} 
+}
+
+void throttleY()
+{
+
+
+float scaledPWM;
+
+//get the percentage of max PWM duty cycle
+  scaledPWM = percentY * 255;
+
+//FLOW//
+
+//start of error check
+
+  if(scaledPWM < 25){	//Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+    scaledPWM = 25;		//25 ~= 10% duty cycle
+    
+	return;
+
+  }else if(scaledPWM == 0){		//check for if robot is at desired location
+    scaledPWM = 0;						//stop, 0% duty cycle
+    allHalt();
+    return;
+
+  }else if (scaledPWM > 255){				//correct for greater than 100% duty cycle
+    scaledPWM = 255;						//scaled PWM set to 100% duty cycle
+    move_backward(pinA, scaledPWM);
+	move_backward(pinB, scaledPWM);
+	return;
+
+  }else{	// all other conditions, with exception of error causing ones
+    move_backward(pinA, scaledPWM);
+	move_backward(pinB, scaledPWM);
+	return;
+} 
+}
+
+motor frontR, backR, frontL, backL;
+
+void motor_clockwise(motor target, scaledPWM) {
+  digitalWrite(target.pinA, HIGH);
+  digitalWrite(target.pinB, LOW);
+  analogWrite(target.pwmPin, scaledPWM);  // for now just full speed
+}
+
+void motor_cclockwise(motor target, scaledPWM) {
+  digitalWrite(target.pinA, LOW);
+  digitalWrite(target.pinB, HIGH);
+  analogWrite(target.pwmPin, scaledPWM);  // for now just full speed
+}
+
+void halt(motor target) {
+  analogWrite(target.pwmPin, 0); // should stop if no PWM
+}
+
+void allHalt() {
+  halt(frontR);
+  halt(backR);
+  halt(frontL);
+  halt(backL);
+}
+
+void pin_init(motor target) {
+  pinMode(target.pinA, OUTPUT);
+  pinMode(target.pinB, OUTPUT);
+  pinMode(target.pwmPin, OUTPUT);
+}
+
+/*
+   pins taken:
+   2,3,4,5
+   14, 15, 16, 17, 18, 19, 20, 21
+*/
+
+void wait_micros (int time) {
+  delay(time/1000);
+  //long startTime = micros();
+  //while (micros() - startTime < time);
+}
+
+
+// High level functions
+/****************************************************************************************/
+// see diagram in "Mecanum Wheel Diagram" page in one note for wheel directions
+void move_forward(uint8_t scaledPWM) {
+  motor_clockwise(frontR, scaledPWM);
+  motor_clockwise(backR, scaledPWM);
+  motor_cclockwise(frontL, scaledPWM);
+  motor_cclockwise(backL, scaledPWM);
+  }
+
+void move_backward(uint8_t scaledPWM) {
+  motor_cclockwise(frontR, scaledPWM);
+  motor_cclockwise(backR, scaledPWM);
+  motor_clockwise(frontL, scaledPWM);
+  motor_clockwise(backL, scaledPWM);
+}
+
+void move_right(uint8_t scaledPWM) {
+  motor_clockwise(frontR, scaledPWM;
+  motor_cclockwise(backR, scaledPWM);
+  motor_cclockwise(frontL, scaledPWM);
+  motor_clockwise(backL, scaledPWM);
+  wait_micros(time, scaledPWM);
+}
+
+void move_left(uint8_t pwm) {
+  motor_cclockwise(frontR, scaledPWM);
+  motor_clockwise(backR, scaledPWM);
+  motor_clockwise(frontL, scaledPWM);
+  motor_cclockwise(backL, scaledPWM);
+}
+
+void setup() {
+  // setup each motor struct
+  frontR.pwmPin = 2;
+  backR.pwmPin = 3;
+  frontL.pwmPin = 4;
+  backL.pwmPin = 5;
+
+  frontR.pinA = 14;
+  frontR.pinB = 15;
+
+  backR.pinA = 16;
+  backR.pinB = 17;
+
+  frontL.pinA = 18;
+  frontL.pinB = 19;
+
+  backL.pinA = 20;
+  backL.pinB = 21;
+
+  pin_init(frontR);
+  pin_init(backR);
+  pin_init(frontL);
+  pin_init(backL);
+}
+void loop() {
+  // loop through each for 5 seconds each
+  throttle(0.3,0.3);
+}
