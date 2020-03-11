@@ -4,8 +4,14 @@
   H   L   >0    ClockWise
 */
 //////////////////////////////
-float percentX = 0.2;
-float percentY = 0.8;
+while( i = 0; i < 8; i++){
+float percentX = 0.1;
+percentX+=i;
+}
+while( j = 0; j < 8; j++){
+float percentY = 0.1;
+percentY+=i;
+}
 //////////////////////////////
 
 struct motor {
@@ -26,7 +32,7 @@ float scaledPWM;
 //FLOW//
 
 //start of error check
-
+if(scaledPWM < 0){
   if(scaledPWM < 25){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
       scaledPWM = 25;   //25 ~= 10% duty cycle
       move_backward(scaledPWM);  
@@ -45,7 +51,31 @@ float scaledPWM;
   }else{  // all other conditions, with exception of error causing ones
     move_backward(scaledPWM);
   return;
-} 
+}
+}else(scaledPWM >= 0){
+  if(scaledPWM < 25){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+      scaledPWM = 25;   //25 ~= 10% duty cycle
+      move_forward(scaledPWM);  
+  return;
+
+  }else if(scaledPWM == 0){   //check for if robot is at desired location
+    scaledPWM = 0;            //stop, 0% duty cycle
+    allHalt();
+    return;
+
+  }else if (scaledPWM > 255){       //correct for greater than 100% duty cycle
+    scaledPWM = 255;            //scaled PWM set to 100% duty cycle
+    move_forward(scaledPWM);
+  return;
+
+  }else{  // all other conditions, with exception of error causing ones
+    move_foreward(scaledPWM);
+  return;
+}
+else{
+	return;
+}
+}	
 }
 
 void throttleY()
@@ -60,7 +90,27 @@ float scaledPWM;
 //FLOW//
 
 //start of error check
+if( scaledPWM < 0){
+  if(scaledPWM < 25){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+    scaledPWM = 25;   //25 ~= 10% duty cycle
+    move_right(scaledPWM);
+  return;
 
+  }else if(scaledPWM == 0){   //check for if robot is at desired location
+    scaledPWM = 0;            //stop, 0% duty cycle
+    allHalt();
+    return;
+
+  }else if (scaledPWM > 255){       //correct for greater than 100% duty cycle
+    scaledPWM = 255;            //scaled PWM set to 100% duty cycle
+    move_right(scaledPWM);
+  return;
+
+  }else{  // all other conditions, with exception of error causing ones
+    move_right(scaledPWM);
+  return;
+}
+}else(scaledPWM >= 0 ){
   if(scaledPWM < 25){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
     scaledPWM = 25;   //25 ~= 10% duty cycle
     move_left(scaledPWM);
@@ -79,7 +129,8 @@ float scaledPWM;
   }else{  // all other conditions, with exception of error causing ones
     move_left(scaledPWM);
   return;
-} 
+}
+}
 }
 
 motor frontR, backR, frontL, backL;
