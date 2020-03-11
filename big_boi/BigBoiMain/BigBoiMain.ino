@@ -15,7 +15,7 @@ struct motor {
 motor frontR, backR, frontL, backL;
 motor grabL, grabR;
 
-enum stateMachine {next, moveToBin, pickUp, moveToEnd, plop} state;
+enum stateMachine {next, moveToBin, pickUp, moveToEnd, plop, quit} state;
 
 struct location {
 		int bottomLeftX;
@@ -23,6 +23,7 @@ struct location {
 		int legosTaken;
 		int binIndex;
 		bool onTop;
+    bool bin;
 	};
 location one, two, three, four, five, six, seven, eight, nine, zero, end;
 location currTarget;
@@ -30,8 +31,10 @@ location currTarget;
 float currX, currY;		// best effor estimations
 float percentX, percentY;		// set by diff function
 
-float pi = 3.14159265359
+float pi = 3.14159265359;
 int currDigit;
+
+float startTime;
 // Piston Functions
 /**********************************************************************/
 void pushSolenoid(int pin) {
@@ -42,30 +45,32 @@ void pullSolenoid(int pin) {
 	digitalWrite(pin, HIGH);
 }
 
-void grab() {
-	pushSolenoid(pistonR);
-	pushSolenoid(pistonL);
-}
-
-void yeet() {
-	pushSolenoid(pistonR);
-	pushSolenoid(pistonL);
-}
+//void grab() {
+//	pushSolenoid(pistonR);
+//	pushSolenoid(pistonL);
+//}
+//
+//void yeet() {
+//	pushSolenoid(pistonR);
+//	pushSolenoid(pistonL);
+//}
 // Low Level Motor Functions
 /**********************************************************************/
-void motor_clockwise(motor target) {
+void motor_clockwise(motor target, uint8_t pwm) {
   digitalWrite(target.pinA, HIGH);
   digitalWrite(target.pinB, LOW);
-  analogWrite(target.pwmPin, 255);  // for now just full speed
+  analogWrite(target.pwmPin, pwm);  // for now just full speed
 }
 
-void motor_cclockwise(motor target) {
+void motor_cclockwise(motor target, uint8_t pwm) {
   digitalWrite(target.pinA, LOW);
   digitalWrite(target.pinB, HIGH);
-  analogWrite(target.pwmPin, 255);  // for now just full speed
+  analogWrite(target.pwmPin, pwm);  // for now just full speed
 }
 
 void halt(motor target) {
+  digitalWrite(target.pinA, LOW);
+  digitalWrite(target.pinB, HIGH);
   analogWrite(target.pwmPin, 0); // should stop if no PWM
 }
 
@@ -152,9 +157,30 @@ void percent_difference(location target) {
 // misc
 /**********************************************************************/
 location getNext() {
+	location returner;
 	switch(currDigit) {
-		case 0: 
+		case 0: returner = zero;
+			break;
+		case 1: returner = one;
+			break;
+		case 2: returner = two;
+			break;
+		case 3: returner = three;
+			break;
+		case 4: returner = four;
+			break;
+		case 5: returner = five;
+			break;
+		case 6: returner = six;
+			break;
+		case 7: returner = seven;
+			break;
+		case 8: returner = eight;
+			break;
+		case 9: returner = nine;
+			break;
 	}
+	return returner;
 }
 
 // main functions
@@ -190,6 +216,9 @@ void setup() {
   	pin_init(frontL);
   	pin_init(backL);
 
+ 	// start time
+ 	// startTime = 
+
 }
 
 void loop() {
@@ -199,10 +228,11 @@ void loop() {
 	// moveToEnd moves in the Y direction then X direction
 	switch(state) {
 		case next:
-
+			currDigit = (int)(pi/10);
+			pi = (pi-currDigit)*10;
 			break;
 		case moveToBin:
-			percentDiff()
+			percent_difference(currTarget);
 			state = pickUp;
 			break;
 		case pickUp:
