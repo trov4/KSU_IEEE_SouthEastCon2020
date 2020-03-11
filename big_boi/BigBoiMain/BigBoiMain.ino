@@ -15,7 +15,7 @@ struct motor {
 motor frontR, backR, frontL, backL;
 motor grabL, grabR;
 
-enum stateMachine {next, moveToBin, pickUp, moveToEnd, plop, quit} state;
+enum stateMachine {init, next, moveToBin, pickUp, moveToEnd, plop, quit} state;
 
 struct location {
 		int bottomLeftX;
@@ -23,7 +23,7 @@ struct location {
 		int legosTaken;
 		int binIndex;
 		bool onTop;
-    bool bin;
+    	bool bin;
 	};
 location one, two, three, four, five, six, seven, eight, nine, zero, end;
 location currTarget;
@@ -179,8 +179,35 @@ location getNext() {
 			break;
 		case 9: returner = nine;
 			break;
+		default: break;
 	}
 	return returner;
+}
+
+void legosPlus(int target) {
+	switch (target) {
+		case 0: zero.legosTaken++;
+			break;
+		case 1: one.legosTaken++;
+			break;
+		case 2: two.legosTaken++;
+			break;
+		case 3: three.legosTaken++;
+			break;
+		case 4: four.legosTaken++;
+			break;
+		case 5: five.legosTaken++;
+			break;
+		case 6: six.legosTaken++;
+			break;
+		case 7: seven.legosTaken++;
+			break;
+		case 8: eight.legosTaken++;
+			break;
+		case 9: nine.legosTaken++;
+			break;
+		default: break;
+	}
 }
 
 // main functions
@@ -217,35 +244,62 @@ void setup() {
   	pin_init(backL);
 
  	// start time
- 	// startTime = 
+ 	startTime = millis();
 
 }
 
-void loop() {
+/*
+ToDo:
+- init locations
+- time stopper
+- fix Noah's Functions
+- add init state
+implement:
+- init
+- pickUp
+- plop
+- quit
+*/
 
+void loop() {
 	// major differences between moveToBin and moveToEnd is:
 	// moveToBin moves in the X direction then Y direction
 	// moveToEnd moves in the Y direction then X direction
 	switch(state) {
-		case next:
+		case init:
+			// waits until some input
+			break;
+		case next: // should work
 			currDigit = (int)(pi/10);
 			pi = (pi-currDigit)*10;
+			currTarget = getNext();
+			state = moveToBin;
 			break;
-		case moveToBin:
+		case moveToBin:  // should work
 			percent_difference(currTarget);
+			// throttleX();
+			// throttleY();
+			currTarget = end;
 			state = pickUp;
 			break;
 		case pickUp:
 			// Pick dat boi up
+			legosPlus(currDigit);
 			state = moveToEnd;
 			break;
-		case moveToEnd: 
+		case moveToEnd: // should work
 			// perform movement to end
+			percent_difference(currTarget);
+			// throttleY();
+			// throttleX();
 			state = plop;
 			break;
 		case plop:
 			// plop
-			state = moveToBin;
+			state = next;
 			break;
+		case quit:
+			break;
+		default: break;
 	}
 }
