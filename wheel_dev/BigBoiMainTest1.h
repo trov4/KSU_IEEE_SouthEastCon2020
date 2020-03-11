@@ -4,14 +4,7 @@
   H   L   >0    ClockWise
 */
 //////////////////////////////
-while( i = 0; i < 8; i++){
-float percentX = 0.1;
-percentX+=i;
-}
-while( j = 0; j < 8; j++){
-float percentY = 0.1;
-percentY+=i;
-}
+
 //////////////////////////////
 
 struct motor {
@@ -234,6 +227,16 @@ void setup() {
 }
 void loop() {
   // loop through each for 5 seconds each
+  while( i = 0; i < 8; i++){
+float percentX = 0.1;
+percentX+=i/10;
   throttleX();
+
+}
+while( j = 0; j < 8; j++){
+float percentY = 0.1;
+percentY+=i/10;
   throttleY();
+
+}
 }
