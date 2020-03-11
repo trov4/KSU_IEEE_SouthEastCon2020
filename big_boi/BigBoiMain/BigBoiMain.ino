@@ -1,12 +1,20 @@
 // includes
 /**********************************************************************/
-
+// #none
 
 // struct definitions
 /**********************************************************************/
 
 // global variable definitions
 /**********************************************************************/
+struct motor {
+  int pinA;
+  int pinB;
+  int pwmPin;
+} ;
+motor frontR, backR, frontL, backL;
+motor grabL, grabR;
+
 enum stateMachine {next, moveToBin, pickUp, moveToEnd, plop} state;
 
 struct location {
@@ -17,11 +25,13 @@ struct location {
 		bool onTop;
 	};
 location one, two, three, four, five, six, seven, eight, nine, zero, end;
-
-int pistonR, pistonL;
+location currTarget;
 
 float currX, currY;		// best effor estimations
 float percentX, percentY;		// set by diff function
+
+float pi = 3.14159265359
+int currDigit;
 // Piston Functions
 /**********************************************************************/
 void pushSolenoid(int pin) {
@@ -43,8 +53,66 @@ void yeet() {
 }
 // Low Level Motor Functions
 /**********************************************************************/
+void motor_clockwise(motor target) {
+  digitalWrite(target.pinA, HIGH);
+  digitalWrite(target.pinB, LOW);
+  analogWrite(target.pwmPin, 255);  // for now just full speed
+}
 
-// Higher Level Wheel Movement Functions -- including throttle
+void motor_cclockwise(motor target) {
+  digitalWrite(target.pinA, LOW);
+  digitalWrite(target.pinB, HIGH);
+  analogWrite(target.pwmPin, 255);  // for now just full speed
+}
+
+void halt(motor target) {
+  analogWrite(target.pwmPin, 0); // should stop if no PWM
+}
+
+void allHalt() {
+  halt(frontR);
+  halt(backR);
+  halt(frontL);
+  halt(backL);
+}
+
+void pin_init(motor target) {
+  pinMode(target.pinA, OUTPUT);
+  pinMode(target.pinB, OUTPUT);
+  pinMode(target.pwmPin, OUTPUT);
+}
+
+// Higher Level Wheel Movement Functions
+/**********************************************************************/
+void move_right(uint8_t pwm) {
+  motor_clockwise(frontR, pwm);
+  motor_clockwise(backR, pwm);
+  motor_cclockwise(frontL, pwm);
+  motor_cclockwise(backL, pwm);
+}
+
+void move_left(uint8_t pwm) {
+  motor_cclockwise(frontR, pwm);
+  motor_cclockwise(backR, pwm);
+  motor_clockwise(frontL, pwm);
+  motor_clockwise(backL, pwm);
+}
+
+void move_up(uint8_t pwm) {
+  motor_clockwise(frontR, pwm);
+  motor_cclockwise(backR, pwm);
+  motor_cclockwise(frontL, pwm);
+  motor_clockwise(backL, pwm);
+}
+
+void move_down(uint8_t pwm) {
+  motor_cclockwise(frontR, pwm);
+  motor_clockwise(backR, pwm);
+  motor_clockwise(frontL, pwm);
+  motor_cclockwise(backL, pwm);
+}
+
+// drive functions
 /**********************************************************************/
 void percent_difference(location target) {
 	// handle end location
@@ -80,8 +148,47 @@ void percent_difference(location target) {
 
 // Grabber Functions
 /**********************************************************************/
+
+// misc
+/**********************************************************************/
+location getNext() {
+	switch(currDigit) {
+		case 0: 
+	}
+}
+
+// main functions
+/**********************************************************************/
 void setup() {
 	state = next;
+
+	/*
+	Pins being Used:
+	2,3,4,5
+	14,15,16,17,18,19,20,21
+	*/
+	// pin inits 
+	frontR.pwmPin = 2;
+  	backR.pwmPin = 3;
+  	frontL.pwmPin = 4;
+  	backL.pwmPin = 5;
+
+  	frontR.pinA = 14;
+  	frontR.pinB = 15;
+
+  	backR.pinA = 16;
+  	backR.pinB = 17;
+
+  	frontL.pinA = 18;
+  	frontL.pinB = 19;
+
+  	backL.pinA = 20;
+  	backL.pinB = 21;
+
+  	pin_init(frontR);
+  	pin_init(backR);
+  	pin_init(frontL);
+  	pin_init(backL);
 
 }
 
@@ -91,6 +198,9 @@ void loop() {
 	// moveToBin moves in the X direction then Y direction
 	// moveToEnd moves in the Y direction then X direction
 	switch(state) {
+		case next:
+
+			break;
 		case moveToBin:
 			percentDiff()
 			state = pickUp;
