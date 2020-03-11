@@ -12,19 +12,21 @@ struct motor {
 
 motor frontR, backR, frontL, backL;
 
-void motor_clockwise(motor target) {
+void motor_clockwise(motor target, uint8_t pwm) {
   digitalWrite(target.pinA, HIGH);
   digitalWrite(target.pinB, LOW);
-  analogWrite(target.pwmPin, 255);  // for now just full speed
+  analogWrite(target.pwmPin, pwm);  // for now just full speed
 }
 
-void motor_cclockwise(motor target) {
+void motor_cclockwise(motor target, uint8_t pwm) {
   digitalWrite(target.pinA, LOW);
   digitalWrite(target.pinB, HIGH);
-  analogWrite(target.pwmPin, 255);  // for now just full speed
+  analogWrite(target.pwmPin, pwm);  // for now just full speed
 }
 
 void halt(motor target) {
+  digitalWrite(target.pinA, LOW);
+  digitalWrite(target.pinB, HIGH);
   analogWrite(target.pwmPin, 0); // should stop if no PWM
 }
 
