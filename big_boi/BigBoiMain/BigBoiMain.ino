@@ -1,6 +1,6 @@
 // includes
 /**********************************************************************/
-// #none
+#include <stdint.h>
 
 // struct definitions
 /**********************************************************************/
@@ -15,7 +15,7 @@ struct motor {
 motor frontR, backR, frontL, backL;
 motor grabL, grabR;
 
-enum stateMachine {init, next, moveToBin, pickUp, moveToEnd, plop, quit} state;
+enum stateMachine {start, next, moveToBin, pickUp, moveToEnd, plop, quit} state;
 
 struct location {
 		int bottomLeftX;
@@ -119,6 +119,114 @@ void move_down(uint8_t pwm) {
 
 // drive functions
 /**********************************************************************/
+
+void throttleY(){
+
+	float scaledPWM;
+
+	//get the percentage of max PWM duty cycle
+	  scaledPWM = percentY * 255;
+
+	//FLOW//
+
+	//start of error check
+	if( scaledPWM < 0){
+		  if(scaledPWM < -25&&scaledPWM > -255){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+			    scaledPWM = 25;   //25 ~= 10% duty cycle
+			    move_right(scaledPWM);
+			  return;
+
+		  }else if(scaledPWM == 0){   //check for if robot is at desired location
+			    scaledPWM = 0;            //stop, 0% duty cycle
+			    allHalt();
+			    return;
+
+		  }else if (scaledPWM < -255){       //correct for greater than 100% duty cycle
+			    scaledPWM = 255;            //scaled PWM set to 100% duty cycle
+			    move_right(scaledPWM);
+			  return;
+
+		  }else{  // all other conditions, with exception of error causing ones
+			    move_right(scaledPWM);
+			  return;
+		}
+	}else if(scaledPWM >= 0 ){
+		  if(scaledPWM < 25){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+		    scaledPWM = 25;   //25 ~= 10% duty cycle
+		    move_left(scaledPWM);
+		  return;
+
+		  }else if(scaledPWM == 0){   //check for if robot is at desired location
+		    scaledPWM = 0;            //stop, 0% duty cycle
+		    allHalt();
+		    return;
+
+		  }else if (scaledPWM > 255){       //correct for greater than 100% duty cycle
+		    scaledPWM = 255;            //scaled PWM set to 100% duty cycle
+		    move_left(scaledPWM);
+		  return;
+
+		  }else{  // all other conditions, with exception of error causing ones
+		    move_left(scaledPWM);
+		  return;
+		  }
+		}else{
+		    return;
+  	}
+}
+
+void throttleX(){
+
+	float scaledPWM;
+
+	//get the percentage of max PWM duty cycle
+	scaledPWM = percentX * 255;
+
+	//FLOW//
+
+	//start of error check
+	if(scaledPWM < 0){
+		  if((scaledPWM < -25)&& (scaledPWM > -255)){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+		    scaledPWM = 25;   //25 ~= 10% duty cycle
+		    move_down(scaledPWM);  
+		    return;
+		  }else if(scaledPWM == 0){   //check for if robot is at desired location
+		    scaledPWM = 0;            //stop, 0% duty cycle
+		    allHalt();
+		    return;
+
+		  }else if (scaledPWM < -255){       //correct for greater than 100% duty cycle
+		    scaledPWM = 255;            //scaled PWM set to 100% duty cycle
+		    move_down(scaledPWM);
+		 	return;
+
+		  }else{  // all other conditions, with exception of error causing ones
+			  move_down(scaledPWM);
+			  return;
+		}
+		}else{
+			  if(scaledPWM < 25){ //Check to set no less than 10% duty cycle, to not have robot slow when it gets 
+			      	scaledPWM = 25;   //25 ~= 10% duty cycle
+			      	move_up(scaledPWM);  
+			  		return;
+
+			  }else if(scaledPWM == 0){   //check for if robot is at desired location
+				    scaledPWM = 0;            //stop, 0% duty cycle
+				    allHalt();
+				    return;
+
+			  }else if (scaledPWM > 255){       //correct for greater than 100% duty cycle
+				    scaledPWM = 255;            //scaled PWM set to 100% duty cycle
+				    move_up(scaledPWM);
+				  	return;
+
+	 	}else{  // all other conditions, with exception of error causing ones
+		   	move_up(scaledPWM);
+		  	return;
+		}
+	} 
+}
+
 void percent_difference(location target) {
 	// handle end location
 	int endX = target.bottomLeftX;
@@ -213,7 +321,7 @@ void legosPlus(int target) {
 // main functions
 /**********************************************************************/
 void setup() {
-	state = next;
+	state = start;
 
 	/*
 	Pins being Used:
@@ -265,7 +373,7 @@ void loop() {
 	// quit if at the end
 	if (millis() - startTime >= 180000) state = quit;
 	switch(state) {
-		case init:
+		case start:
 			// waits until some input
 
 
